@@ -37,6 +37,9 @@ jobs:
         working-directory: frontend
         run: npm run build
 
+      - name: List files in build directory for debugging
+        run: ls -R frontend/build
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:

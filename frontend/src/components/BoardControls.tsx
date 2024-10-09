@@ -1,12 +1,16 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useRef } from 'react';
 
 interface BoardControlsProps {
   dropTetromino: () => void;
   moveTetromino: (dir: number) => void;
   rotateTetromino: () => void;
+  currentDropInterval: number;
 }
 
-const useBoardControls = ({ dropTetromino, moveTetromino, rotateTetromino }: BoardControlsProps) => {
+const useBoardControls = ({ dropTetromino, moveTetromino, rotateTetromino, currentDropInterval }: BoardControlsProps) => {
+  const touchStartX = useRef(0);
+  const touchStartY = useRef(0);
+
   const handleKeyboardInput = useCallback(
     (e: KeyboardEvent) => {
       if (e.key === 'ArrowLeft') {
@@ -22,13 +26,41 @@ const useBoardControls = ({ dropTetromino, moveTetromino, rotateTetromino }: Boa
     [moveTetromino, dropTetromino, rotateTetromino]
   );
 
-  useEffect(() => {
-    document.addEventListener('keydown', handleKeyboardInput);
-    return () => document.removeEventListener('keydown', handleKeyboardInput);
-  }, [handleKeyboardInput]);
+  const handleTouchStart = useCallback((e: TouchEvent) => {
+    const touch = e.touches[0];
+    touchStartX.current = touch.clientX;
+    touchStartY.current = touch.clientY;
+  }, []);
+
+  const handleTouchEnd = useCallback((e: TouchEvent) => {
+    const touch = e.changedTouches[0];
+    const deltaX = touch.clientX - touchStartX.current;
+    const deltaY = touch.clientY - touchStartY.current;
+
+    if (Math.abs(deltaX) < 10 && Math.abs(deltaY) < 10) {
+      rotateTetromino();
+    } else {
+      if (Math.abs(deltaX) > Math.abs(deltaY)) {
+        moveTetromino(deltaX > 0 ? 1 : -1);
+      } else {
+        dropTetromino();
+      }
+    }
+  }, [moveTetromino, dropTetromino, rotateTetromino]);
 
   useEffect(() => {
-    const interval = setInterval(dropTetromino, 1000);
+    document.addEventListener('keydown', handleKeyboardInput);
+    document.addEventListener('touchstart', handleTouchStart);
+    document.addEventListener('touchend', handleTouchEnd);
+    return () => {
+      document.removeEventListener('keydown', handleKeyboardInput);
+      document.removeEventListener('touchstart', handleTouchStart);
+      document.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [handleKeyboardInput, handleTouchStart, handleTouchEnd]);
+
+  useEffect(() => {
+    const interval = setInterval(dropTetromino, currentDropInterval);
     return () => clearInterval(interval);
   }, [dropTetromino]);
 };

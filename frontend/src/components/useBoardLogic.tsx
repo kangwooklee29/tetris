@@ -8,6 +8,7 @@ const useBoardLogic = () => {
   );
   const [currentTetromino, setCurrentTetromino] = useState<Tetromino>(randomTetromino());
   const [tetrominoPosition, setTetrominoPosition] = useState<Point>([0, COLS / 2 - 1]);
+  const [currentDropInterval, setCurrentDropInterval] = useState<number>(1000);
 
   const isPositionInBoard = (position: Point, offset: Point): boolean => {
     const newX = position[0] + offset[0];
@@ -62,7 +63,7 @@ const useBoardLogic = () => {
     }
   };
 
-  return { isPositionInBoard, gameBoard, currentTetromino, tetrominoPosition, setTetrominoPosition, setCurrentTetromino, setGameBoard, dropTetromino, moveTetromino, rotateTetromino };
+  return { isPositionInBoard, gameBoard, currentTetromino, tetrominoPosition, setTetrominoPosition, setCurrentTetromino, setGameBoard, dropTetromino, moveTetromino, rotateTetromino, currentDropInterval };
 };
 
 export default useBoardLogic;

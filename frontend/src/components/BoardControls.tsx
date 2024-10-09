@@ -1,36 +1,36 @@
 import { useEffect, useCallback } from 'react';
 
 interface BoardControlsProps {
-  drop: () => void;
-  move: (dir: number) => void;
-  rotate: () => void;
+  dropTetromino: () => void;
+  moveTetromino: (dir: number) => void;
+  rotateTetromino: () => void;
 }
 
-const useBoardControls = ({ drop, move, rotate }: BoardControlsProps) => {
-  const handleInput = useCallback(
+const useBoardControls = ({ dropTetromino, moveTetromino, rotateTetromino }: BoardControlsProps) => {
+  const handleKeyboardInput = useCallback(
     (e: KeyboardEvent) => {
       if (e.key === 'ArrowLeft') {
-        move(-1);
+        moveTetromino(-1);
       } else if (e.key === 'ArrowRight') {
-        move(1);
+        moveTetromino(1);
       } else if (e.key === 'ArrowDown') {
-        drop();
+        dropTetromino();
       } else if (e.key === 'ArrowUp') {
-        rotate();
+        rotateTetromino();
       }
     },
-    [move, drop, rotate]
+    [moveTetromino, dropTetromino, rotateTetromino]
   );
 
   useEffect(() => {
-    document.addEventListener('keydown', handleInput);
-    return () => document.removeEventListener('keydown', handleInput);
-  }, [handleInput]);
+    document.addEventListener('keydown', handleKeyboardInput);
+    return () => document.removeEventListener('keydown', handleKeyboardInput);
+  }, [handleKeyboardInput]);
 
   useEffect(() => {
-    const interval = setInterval(drop, 1000);
+    const interval = setInterval(dropTetromino, 1000);
     return () => clearInterval(interval);
-  }, [drop]);
+  }, [dropTetromino]);
 };
 
 export default useBoardControls;

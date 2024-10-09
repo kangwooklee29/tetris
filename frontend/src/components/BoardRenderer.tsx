@@ -3,23 +3,23 @@ import { BLOCK_SIZE, Point } from '../utils/constants';
 import { Tetromino } from '../utils/tetromino';
 
 interface BoardRendererProps {
-  board: number[][];
-  current: Tetromino;
-  pos: Point;
+  gameBoard: number[][];
+  currentTetromino: Tetromino;
+  tetrominoPosition: Point;
 }
 
-const BoardRenderer: React.FC<BoardRendererProps> = ({ board, current, pos }) => {
-  const renderBoard = () => {
-    const tempBoard = board.map(row => [...row]);
-    current.shape.forEach(([x, y]) => {
-      const boardX = x + pos[0];
-      const boardY = y + pos[1];
-      if (boardX >= 0) {
-        tempBoard[boardX][boardY] = 1;
+const BoardRenderer: React.FC<BoardRendererProps> = ({ gameBoard, currentTetromino, tetrominoPosition }) => {
+  const renderGameBoard = () => {
+    const temporaryBoard = gameBoard.map(row => [...row]);
+    currentTetromino.shape.forEach(([x, y]) => {
+      const boardRow = x + tetrominoPosition[0];
+      const boardColumn = y + tetrominoPosition[1];
+      if (boardRow >= 0) {
+        temporaryBoard[boardRow][boardColumn] = 1;
       }
     });
 
-    return tempBoard.map((row, rowIndex) => (
+    return temporaryBoard.map((row, rowIndex) => (
       <div key={rowIndex} style={{ display: 'flex' }}>
         {row.map((cell, cellIndex) => (
           <div
@@ -28,7 +28,7 @@ const BoardRenderer: React.FC<BoardRendererProps> = ({ board, current, pos }) =>
               width: BLOCK_SIZE,
               height: BLOCK_SIZE,
               border: '1px solid #ddd',
-              background: cell ? current.color : 'white',
+              background: cell ? currentTetromino.color : 'white',
             }}
           />
         ))}
@@ -36,7 +36,7 @@ const BoardRenderer: React.FC<BoardRendererProps> = ({ board, current, pos }) =>
     ));
   };
 
-  return <div>{renderBoard()}</div>;
+  return <div>{renderGameBoard()}</div>;
 };
 
 export default BoardRenderer;

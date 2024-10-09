@@ -48,10 +48,15 @@ const useBoardControls = ({ dropTetromino, moveTetromino, rotateTetromino, curre
     }
   }, [moveTetromino, dropTetromino, rotateTetromino]);
 
+  const handleTouchMove = useCallback((e: TouchEvent) => {
+    e.preventDefault();
+  }, []);
+
   useEffect(() => {
     document.addEventListener('keydown', handleKeyboardInput);
     document.addEventListener('touchstart', handleTouchStart);
     document.addEventListener('touchend', handleTouchEnd);
+    document.addEventListener('touchmove', handleTouchMove);
     return () => {
       document.removeEventListener('keydown', handleKeyboardInput);
       document.removeEventListener('touchstart', handleTouchStart);

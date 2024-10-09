@@ -70,21 +70,36 @@ const useBoardLogic = () => {
     setGameBoard(rowsToClear);
   };
 
-  const dropTetromino = () => {
+  const lockAndResetTetromino = () => {
+    lockTetromino();
+    setCurrentTetromino(randomTetromino());
+    setTetrominoPosition([0, COLS / 2 - 1]);
+    if (!isTetrominoValid(currentTetromino.shape, tetrominoPosition)) {
+      setIsGameOver(true);
+      setGameOverMessage("Game Over");
+    }
+  };
+
+  const dropTetromino = (toFloor?: boolean) => {
     if (currentBoardFreeze || isGameOver) {
       return;
     }
+
+    if (toFloor) {
+      let newPos: Point = [tetrominoPosition[0], tetrominoPosition[1]];
+      while (isTetrominoValid(currentTetromino.shape, [newPos[0] + 1, newPos[1]])) {
+        newPos = [newPos[0] + 1, newPos[1]];
+      }
+      setTetrominoPosition(newPos);
+      lockAndResetTetromino();
+      return;
+    }
+
     const newPos: Point = [tetrominoPosition[0] + 1, tetrominoPosition[1]];
     if (isTetrominoValid(currentTetromino.shape, newPos)) {
       setTetrominoPosition(newPos);
     } else {
-      lockTetromino();
-      setCurrentTetromino(randomTetromino());
-      setTetrominoPosition([0, COLS / 2 - 1]);
-      if (!isTetrominoValid(currentTetromino.shape, tetrominoPosition)) {
-        setIsGameOver(true);
-        setGameOverMessage("Game Over");
-      }
+      lockAndResetTetromino();
     }
   };
 

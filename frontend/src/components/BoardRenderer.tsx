@@ -8,11 +8,11 @@ interface BoardRendererProps {
   currentTetromino: Tetromino;
   tetrominoPosition: Point;
   isPositionInBoard: (position: Point, offset: Point) => boolean;
-  clearedLines: number;
+  totalClearedLines: number;
   gameOverMessage: string;
 }
 
-const BoardRenderer: React.FC<BoardRendererProps> = ({ gameBoard, currentTetromino, tetrominoPosition, isPositionInBoard, clearedLines, gameOverMessage }) => {
+const BoardRenderer: React.FC<BoardRendererProps> = ({ gameBoard, currentTetromino, tetrominoPosition, isPositionInBoard, totalClearedLines, gameOverMessage }) => {
   const renderGameBoard = () => {
     const temporaryBoard = gameBoard.map(row => [...row]);
     currentTetromino.shape.forEach(([x, y]) => {
@@ -42,7 +42,7 @@ const BoardRenderer: React.FC<BoardRendererProps> = ({ gameBoard, currentTetromi
     <div>
       {renderGameBoard()}
       <div className="game-info">
-        <p>Cleared Lines: {clearedLines}</p>
+        <p>Total Cleared Lines: {totalClearedLines}</p>
         {gameOverMessage && <p className="game-over">{gameOverMessage}</p>}
       </div>
     </div>

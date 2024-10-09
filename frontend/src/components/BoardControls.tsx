@@ -1,7 +1,7 @@
 import { useEffect, useCallback, useRef } from 'react';
 
 interface BoardControlsProps {
-  dropTetromino: () => void;
+  dropTetromino: (toFloor?: boolean) => void;
   moveTetromino: (dir: number) => void;
   rotateTetromino: () => void;
   currentDropInterval: number;
@@ -21,6 +21,8 @@ const useBoardControls = ({ dropTetromino, moveTetromino, rotateTetromino, curre
         dropTetromino();
       } else if (e.key === 'ArrowUp') {
         rotateTetromino();
+      } else if (e.key === 'Space') {
+        dropTetromino(true);
       }
     },
     [moveTetromino, dropTetromino, rotateTetromino]

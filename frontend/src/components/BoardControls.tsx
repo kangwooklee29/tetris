@@ -21,7 +21,7 @@ const useBoardControls = ({ dropTetromino, moveTetromino, rotateTetromino, curre
         dropTetromino();
       } else if (e.key === 'ArrowUp') {
         rotateTetromino();
-      } else if (e.key === 'Space') {
+      } else if (e.key === ' ') {
         dropTetromino(true);
       }
     },
@@ -54,7 +54,16 @@ const useBoardControls = ({ dropTetromino, moveTetromino, rotateTetromino, curre
 
   const handleTouchMove = useCallback((e: TouchEvent) => {
     e.preventDefault();
-  }, []);
+    const touch = e.touches[0];
+    const deltaX = touch.clientX - touchStartX.current;
+    const deltaY = touch.clientY - touchStartY.current;
+
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+      moveTetromino(deltaX > 0 ? 1 : -1);
+    } else {
+      dropTetromino();
+    }
+  }, [moveTetromino, dropTetromino]);
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyboardInput);

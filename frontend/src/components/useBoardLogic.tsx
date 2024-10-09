@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { COLS, ROWS, Point } from '../utils/constants';
+import { COLS, ROWS, Point, InitialDropInterval, ClearLineDelay } from '../utils/constants';
 import { randomTetromino, Tetromino } from '../utils/tetromino';
 
 const useBoardLogic = () => {
@@ -8,7 +8,8 @@ const useBoardLogic = () => {
   );
   const [currentTetromino, setCurrentTetromino] = useState<Tetromino>(randomTetromino());
   const [tetrominoPosition, setTetrominoPosition] = useState<Point>([0, COLS / 2 - 1]);
-  const [currentDropInterval, setCurrentDropInterval] = useState<number>(1000);
+  const [currentDropInterval, setCurrentDropInterval] = useState<number>(InitialDropInterval);
+  const [currentBoardFreeze, setCurrentBoardFreeze] = useState<boolean>(false);
 
   const isPositionInBoard = (position: Point, offset: Point): boolean => {
     const newX = position[0] + offset[0];
@@ -35,10 +36,39 @@ const useBoardLogic = () => {
       const newY = y + tetrominoPosition[1];
       newBoard[newX][newY] = currentTetromino.color;
     });
-    setGameBoard(newBoard);
+
+    clearLines(newBoard);
+  };
+
+  const clearLines = (newBoard: string[][]) => {
+    const hasLinesToClear = newBoard.some(row => row.every(cell => cell !== ""));
+  
+    if (!hasLinesToClear) {
+      return;
+    }
+
+    setCurrentBoardFreeze(true);
+    animateLineClear(newBoard);
+
+    setTimeout(() => {
+      const clearedBoard = newBoard.filter(row => row.every(cell => cell !== ""));
+      const clearedLines = ROWS - clearedBoard.length;
+      const newEmptyRows = Array.from({ length: clearedLines }, () => Array(COLS).fill(""));
+  
+      setGameBoard([...newEmptyRows, ...clearedBoard]);
+      setCurrentBoardFreeze(false);
+    }, ClearLineDelay);
+  };
+
+  const animateLineClear = (newBoard: string[][]) => {
+    const rowsToClear = newBoard.map(row => row.every(cell => cell === "gray") ? Array(COLS).fill("") : row);
+    setGameBoard(rowsToClear);
   };
 
   const dropTetromino = () => {
+    if (currentBoardFreeze) {
+      return;
+    }
     const newPos: Point = [tetrominoPosition[0] + 1, tetrominoPosition[1]];
     if (isTetrominoValid(currentTetromino.shape, newPos)) {
       setTetrominoPosition(newPos);

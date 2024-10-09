@@ -1,0 +1,12 @@
+.board-row {
+    display: flex;
+}
+
+.board-cell {
+    border: 1px solid #ddd;
+    background-color: white;
+}
+
+.board-cell.active {
+    background-color: var(--tetromino-color);
+}

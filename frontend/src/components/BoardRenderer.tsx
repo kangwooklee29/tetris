@@ -1,35 +1,35 @@
 import React from 'react';
+import './BoardRenderer.css';
 import { BLOCK_SIZE, Point } from '../utils/constants';
 import { Tetromino } from '../utils/tetromino';
 
 interface BoardRendererProps {
-  gameBoard: number[][];
+  gameBoard: string[][];
   currentTetromino: Tetromino;
   tetrominoPosition: Point;
+  isPositionInBoard: (position: Point, offset: Point) => boolean;
 }
 
-const BoardRenderer: React.FC<BoardRendererProps> = ({ gameBoard, currentTetromino, tetrominoPosition }) => {
+const BoardRenderer: React.FC<BoardRendererProps> = ({ gameBoard, currentTetromino, tetrominoPosition, isPositionInBoard }) => {
   const renderGameBoard = () => {
     const temporaryBoard = gameBoard.map(row => [...row]);
     currentTetromino.shape.forEach(([x, y]) => {
-      const boardRow = x + tetrominoPosition[0];
-      const boardColumn = y + tetrominoPosition[1];
-      if (boardRow >= 0) {
-        temporaryBoard[boardRow][boardColumn] = 1;
+      if (isPositionInBoard([x, y], tetrominoPosition)) {
+        temporaryBoard[x + tetrominoPosition[0]][y + tetrominoPosition[1]] = currentTetromino.color;
       }
     });
 
     return temporaryBoard.map((row, rowIndex) => (
-      <div key={rowIndex} style={{ display: 'flex' }}>
+        <div key={rowIndex} className="board-row">
         {row.map((cell, cellIndex) => (
           <div
             key={cellIndex}
+            className={`board-cell ${cell ? 'active' : ''}`}
             style={{
+              '--tetromino-color': cell ? cell : '',
               width: BLOCK_SIZE,
               height: BLOCK_SIZE,
-              border: '1px solid #ddd',
-              background: cell ? currentTetromino.color : 'white',
-            }}
+            } as React.CSSProperties}
           />
         ))}
       </div>

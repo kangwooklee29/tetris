@@ -52,7 +52,7 @@ const useBoardLogic = () => {
     animateLineClear(newBoard);
 
     setTimeout(() => {
-      const clearedBoard = newBoard.filter(row => row.every(cell => cell !== ""));
+      const clearedBoard = newBoard.filter(row => !row.every(cell => cell !== ""));
       const clearedLines = ROWS - clearedBoard.length;
       const newEmptyRows = Array.from({ length: clearedLines }, () => Array(COLS).fill(""));
   
@@ -62,7 +62,7 @@ const useBoardLogic = () => {
   };
 
   const animateLineClear = (newBoard: string[][]) => {
-    const rowsToClear = newBoard.map(row => row.every(cell => cell === "gray") ? Array(COLS).fill("") : row);
+    const rowsToClear = newBoard.map(row => row.every(cell => cell !== "") ? Array(COLS).fill("gray") : row);
     setGameBoard(rowsToClear);
   };
 

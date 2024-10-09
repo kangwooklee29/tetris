@@ -10,6 +10,9 @@ const useBoardLogic = () => {
   const [tetrominoPosition, setTetrominoPosition] = useState<Point>([0, COLS / 2 - 1]);
   const [currentDropInterval, setCurrentDropInterval] = useState<number>(InitialDropInterval);
   const [currentBoardFreeze, setCurrentBoardFreeze] = useState<boolean>(false);
+  const [isGameOver, setIsGameOver] = useState<boolean>(false);
+  const [gameOverMessage, setGameOverMessage] = useState<string>("");
+  const [clearedLines, setClearedLines] = useState<number>(0);
 
   const isPositionInBoard = (position: Point, offset: Point): boolean => {
     const newX = position[0] + offset[0];
@@ -42,9 +45,9 @@ const useBoardLogic = () => {
   };
 
   const clearLines = (newBoard: string[][]) => {
-    const hasLinesToClear = newBoard.some(row => row.every(cell => cell !== ""));
+    const linesToClear = newBoard.filter(row => row.every(cell => cell !== "")).length;
   
-    if (!hasLinesToClear) {
+    if (linesToClear === 0) {
       return;
     }
 
@@ -58,6 +61,7 @@ const useBoardLogic = () => {
   
       setGameBoard([...newEmptyRows, ...clearedBoard]);
       setCurrentBoardFreeze(false);
+      setClearedLines(clearedLines + linesToClear);
     }, ClearLineDelay);
   };
 
@@ -67,7 +71,7 @@ const useBoardLogic = () => {
   };
 
   const dropTetromino = () => {
-    if (currentBoardFreeze) {
+    if (currentBoardFreeze || isGameOver) {
       return;
     }
     const newPos: Point = [tetrominoPosition[0] + 1, tetrominoPosition[1]];
@@ -77,6 +81,10 @@ const useBoardLogic = () => {
       lockTetromino();
       setCurrentTetromino(randomTetromino());
       setTetrominoPosition([0, COLS / 2 - 1]);
+      if (!isTetrominoValid(currentTetromino.shape, tetrominoPosition)) {
+        setIsGameOver(true);
+        setGameOverMessage("Game Over");
+      }
     }
   };
 
@@ -94,7 +102,7 @@ const useBoardLogic = () => {
     }
   };
 
-  return { isPositionInBoard, gameBoard, currentTetromino, tetrominoPosition, setTetrominoPosition, setCurrentTetromino, setGameBoard, dropTetromino, moveTetromino, rotateTetromino, currentDropInterval };
+  return { isPositionInBoard, gameBoard, currentTetromino, tetrominoPosition, setTetrominoPosition, setCurrentTetromino, setGameBoard, dropTetromino, moveTetromino, rotateTetromino, currentDropInterval, clearedLines, gameOverMessage };
 };
 
 export default useBoardLogic;

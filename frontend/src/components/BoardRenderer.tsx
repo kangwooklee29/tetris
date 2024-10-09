@@ -8,9 +8,11 @@ interface BoardRendererProps {
   currentTetromino: Tetromino;
   tetrominoPosition: Point;
   isPositionInBoard: (position: Point, offset: Point) => boolean;
+  clearedLines: number;
+  gameOverMessage: string;
 }
 
-const BoardRenderer: React.FC<BoardRendererProps> = ({ gameBoard, currentTetromino, tetrominoPosition, isPositionInBoard }) => {
+const BoardRenderer: React.FC<BoardRendererProps> = ({ gameBoard, currentTetromino, tetrominoPosition, isPositionInBoard, clearedLines, gameOverMessage }) => {
   const renderGameBoard = () => {
     const temporaryBoard = gameBoard.map(row => [...row]);
     currentTetromino.shape.forEach(([x, y]) => {
@@ -20,7 +22,7 @@ const BoardRenderer: React.FC<BoardRendererProps> = ({ gameBoard, currentTetromi
     });
 
     return temporaryBoard.map((row, rowIndex) => (
-        <div key={rowIndex} className="board-row">
+      <div key={rowIndex} className="board-row">
         {row.map((cell, cellIndex) => (
           <div
             key={cellIndex}
@@ -36,7 +38,15 @@ const BoardRenderer: React.FC<BoardRendererProps> = ({ gameBoard, currentTetromi
     ));
   };
 
-  return <div>{renderGameBoard()}</div>;
+  return (
+    <div>
+      {renderGameBoard()}
+      <div className="game-info">
+        <p>Cleared Lines: {clearedLines}</p>
+        {gameOverMessage && <p className="game-over">{gameOverMessage}</p>}
+      </div>
+    </div>
+  );
 };
 
 export default BoardRenderer;

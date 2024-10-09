@@ -36,6 +36,7 @@ const useBoardLogic = () => {
       const newY = y + tetrominoPosition[1];
       newBoard[newX][newY] = currentTetromino.color;
     });
+    setGameBoard(newBoard);
 
     clearLines(newBoard);
   };

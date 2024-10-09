@@ -12,7 +12,7 @@ const useBoardLogic = () => {
   const [currentBoardFreeze, setCurrentBoardFreeze] = useState<boolean>(false);
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [gameOverMessage, setGameOverMessage] = useState<string>("");
-  const [clearedLines, setClearedLines] = useState<number>(0);
+  const [totalClearedLines, setTotalClearedLines] = useState<number>(0);
 
   const isPositionInBoard = (position: Point, offset: Point): boolean => {
     const newX = position[0] + offset[0];
@@ -61,7 +61,7 @@ const useBoardLogic = () => {
   
       setGameBoard([...newEmptyRows, ...clearedBoard]);
       setCurrentBoardFreeze(false);
-      setClearedLines(clearedLines + linesToClear);
+      setTotalClearedLines(totalClearedLines + linesToClear);
     }, ClearLineDelay);
   };
 
@@ -102,7 +102,7 @@ const useBoardLogic = () => {
     }
   };
 
-  return { isPositionInBoard, gameBoard, currentTetromino, tetrominoPosition, setTetrominoPosition, setCurrentTetromino, setGameBoard, dropTetromino, moveTetromino, rotateTetromino, currentDropInterval, clearedLines, gameOverMessage };
+  return { isPositionInBoard, gameBoard, currentTetromino, tetrominoPosition, setTetrominoPosition, setCurrentTetromino, setGameBoard, dropTetromino, moveTetromino, rotateTetromino, currentDropInterval, totalClearedLines, gameOverMessage };
 };
 
 export default useBoardLogic;

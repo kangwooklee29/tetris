@@ -114,6 +114,21 @@ const useBoardLogic = () => {
     const newShape = currentTetromino.shape.map(([x, y]) => [-y, x] as Point);
     if (isTetrominoValid(newShape, tetrominoPosition)) {
       setCurrentTetromino({ ...currentTetromino, shape: newShape });
+    } else {
+      const offsets: Point[] = [
+        [0, -1], // 왼쪽으로 이동
+        [0, 1],  // 오른쪽으로 이동
+        [-1, 0], // 위로 이동
+        [1, 0]   // 아래로 이동
+      ];
+      for (let offset of offsets) {
+        const newPosition: Point = [tetrominoPosition[0] + offset[0], tetrominoPosition[1] + offset[1]];
+        if (isTetrominoValid(newShape, newPosition)) {
+          setTetrominoPosition(newPosition);
+          setCurrentTetromino({ ...currentTetromino, shape: newShape });
+          break;
+        }
+      }
     }
   };
 

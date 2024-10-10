@@ -10,6 +10,8 @@ interface BoardControlsProps {
 const useBoardControls = ({ dropTetromino, moveTetromino, rotateTetromino, currentDropInterval }: BoardControlsProps) => {
   const touchStartX = useRef(0);
   const touchStartY = useRef(0);
+  const prevTouchPosX = useRef(0);
+  const prevTouchPosY = useRef(0);
 
   const handleKeyboardInput = useCallback(
     (e: KeyboardEvent) => {
@@ -33,6 +35,8 @@ const useBoardControls = ({ dropTetromino, moveTetromino, rotateTetromino, curre
     const touch = e.touches[0];
     touchStartX.current = touch.clientX;
     touchStartY.current = touch.clientY;
+    prevTouchPosX.current = touch.clientX;
+    prevTouchPosY.current = touch.clientY;
   }, []);
 
   const handleTouchEnd = useCallback((e: TouchEvent) => {
@@ -43,14 +47,8 @@ const useBoardControls = ({ dropTetromino, moveTetromino, rotateTetromino, curre
 
     if (Math.abs(deltaX) < 10 && Math.abs(deltaY) < 10) {
       rotateTetromino();
-    } else {
-      if (Math.abs(deltaX) > Math.abs(deltaY)) {
-        moveTetromino(deltaX > 0 ? 1 : -1);
-      } else {
-        dropTetromino();
-      }
     }
-  }, [moveTetromino, dropTetromino, rotateTetromino]);
+  }, [rotateTetromino]);
 
   const handleTouchMove = useCallback((e: TouchEvent) => {
     e.preventDefault();
@@ -62,6 +60,11 @@ const useBoardControls = ({ dropTetromino, moveTetromino, rotateTetromino, curre
       moveTetromino(deltaX > 0 ? 1 : -1);
     } else {
       dropTetromino();
+    }
+
+    if (Math.abs(deltaX) >= 10 || Math.abs(deltaY) >= 10) {
+      prevTouchPosX.current = touch.clientX;
+      prevTouchPosY.current = touch.clientY;
     }
   }, [moveTetromino, dropTetromino]);
 

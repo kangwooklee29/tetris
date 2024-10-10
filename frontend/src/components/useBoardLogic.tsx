@@ -70,13 +70,20 @@ const useBoardLogic = () => {
     setGameBoard(rowsToClear);
   };
 
+  const processGameOver = () => {
+    const newBoard = gameBoard.map(row =>
+      row.map(cell => cell ? "gray" : "")
+    );
+    setIsGameOver(true);
+    setGameOverMessage("Game Over");
+  };
+
   const lockAndResetTetromino = () => {
     lockTetromino();
     setCurrentTetromino(randomTetromino());
     setTetrominoPosition([0, COLS / 2 - 1]);
     if (!isTetrominoValid(currentTetromino.shape, tetrominoPosition)) {
-      setIsGameOver(true);
-      setGameOverMessage("Game Over");
+      processGameOver();
     }
   };
 

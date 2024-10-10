@@ -74,6 +74,7 @@ const useBoardLogic = () => {
     const newBoard = gameBoard.map(row =>
       row.map(cell => cell ? "gray" : "")
     );
+    setGameBoard(newBoard);
     setIsGameOver(true);
     setGameOverMessage("Game Over");
   };

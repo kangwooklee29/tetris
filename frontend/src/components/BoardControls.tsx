@@ -84,7 +84,7 @@ const useBoardControls = ({ dropTetromino, moveTetromino, rotateTetromino, curre
   useEffect(() => {
     const interval = setInterval(dropTetromino, currentDropInterval);
     return () => clearInterval(interval);
-  }, [dropTetromino]);
+  }, [dropTetromino, currentDropInterval]);
 };
 
 export default useBoardControls;

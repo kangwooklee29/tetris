@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { COLS, ROWS, Point, InitialDropInterval, ClearLineDelay, DebounceInterval } from '../utils/constants';
 import { randomTetromino, Tetromino } from '../utils/tetromino';
 import { useDebounce } from '../context/DebounceContext';
@@ -13,10 +13,10 @@ const useBoardLogic = () => {
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [gameOverMessage, setGameOverMessage] = useState<string>("");
   const [totalClearedLines, setTotalClearedLines] = useState<number>(0);
+  const [currentDropInterval, setCurrentDropInterval] = useState<number>(InitialDropInterval);
 
-  let currentDropInterval = InitialDropInterval;
-  let currentBoardFreeze = false;
-  let droppedToFloor = false;
+  const currentBoardFreezeRef = useRef<boolean>(false);
+  const droppedToFloorRef = useRef<boolean>(false);
 
   const isPositionInBoard = (position: Point, offset: Point): boolean => {
     const newX = position[0] + offset[0];
@@ -55,7 +55,7 @@ const useBoardLogic = () => {
       return;
     }
 
-    currentBoardFreeze = true;
+    currentBoardFreezeRef.current = true;
     animateLineClear(newBoard);
 
     setTimeout(() => {
@@ -64,7 +64,7 @@ const useBoardLogic = () => {
       const newEmptyRows = Array.from({ length: clearedLines }, () => Array(COLS).fill(""));
   
       setGameBoard([...newEmptyRows, ...clearedBoard]);
-      currentBoardFreeze = false;
+      currentBoardFreezeRef.current = false;
       setTotalClearedLines(totalClearedLines + linesToClear);
     }, ClearLineDelay);
   };
@@ -93,14 +93,14 @@ const useBoardLogic = () => {
   };
 
   useEffect(() => {
-    if (currentBoardFreeze || isGameOver) {
+    if (currentBoardFreezeRef.current || isGameOver) {
       return;
     }
 
-    if (droppedToFloor)
+    if (droppedToFloorRef.current)
     {
       lockAndResetTetromino();
-      droppedToFloor = true;
+      droppedToFloorRef.current = false;
       return;
     }
 
@@ -112,10 +112,10 @@ const useBoardLogic = () => {
         lockAndResetTetromino();
       }, DebounceInterval);
     }
-  }, [tetrominoPosition, currentTetromino, currentBoardFreeze, isGameOver]);
+  }, [tetrominoPosition, currentTetromino, currentBoardFreezeRef, isGameOver]);
 
   const dropTetromino = (toFloor?: boolean) => {
-    if (currentBoardFreeze || isGameOver) {
+    if (currentBoardFreezeRef.current || isGameOver) {
       return;
     }
 
@@ -124,7 +124,8 @@ const useBoardLogic = () => {
       while (isTetrominoValid(currentTetromino.shape, [newPos[0] + 1, newPos[1]])) {
         newPos = [newPos[0] + 1, newPos[1]];
       }
-      droppedToFloor = true;
+      droppedToFloorRef.current = true;
+      console.log(droppedToFloorRef.current);
       setTetrominoPosition(newPos);
       return;
     }
@@ -156,11 +157,14 @@ const useBoardLogic = () => {
         [1, 0]   // 아래로 이동
       ];
       for (let offset of offsets) {
-        const newPosition: Point = [tetrominoPosition[0] + offset[0], tetrominoPosition[1] + offset[1]];
-        if (isTetrominoValid(newShape, newPosition)) {
-          setTetrominoPosition(newPosition);
-          setCurrentTetromino({ ...currentTetromino, shape: newShape });
-          break;
+        let newPosition: Point = [tetrominoPosition[0], tetrominoPosition[1]];
+        for (let i = 0; i < 4; i++) {
+          newPosition = [newPosition[0] + offset[0], newPosition[1] + offset[1]];
+          if (isTetrominoValid(newShape, newPosition)) {
+            setTetrominoPosition(newPosition);
+            setCurrentTetromino({ ...currentTetromino, shape: newShape });
+              break;
+          }
         }
       }
     }

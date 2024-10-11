@@ -16,6 +16,7 @@ const useBoardLogic = () => {
 
   let currentDropInterval = InitialDropInterval;
   let currentBoardFreeze = false;
+  let droppedToFloor = false;
 
   const isPositionInBoard = (position: Point, offset: Point): boolean => {
     const newX = position[0] + offset[0];
@@ -96,6 +97,13 @@ const useBoardLogic = () => {
       return;
     }
 
+    if (droppedToFloor)
+    {
+      lockAndResetTetromino();
+      droppedToFloor = true;
+      return;
+    }
+
     if(!isTetrominoValid(currentTetromino.shape, [tetrominoPosition[0] + 1, tetrominoPosition[1]])) {
       if (debounceRef.current) {
         clearTimeout(debounceRef.current);
@@ -116,6 +124,7 @@ const useBoardLogic = () => {
       while (isTetrominoValid(currentTetromino.shape, [newPos[0] + 1, newPos[1]])) {
         newPos = [newPos[0] + 1, newPos[1]];
       }
+      droppedToFloor = true;
       setTetrominoPosition(newPos);
       return;
     }

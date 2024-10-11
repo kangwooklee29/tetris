@@ -6,6 +6,7 @@ export type Point = [number, number];
 
 export const InitialDropInterval = 1000;
 export const ClearLineDelay = 500;
+export const DebounceInterval = 1000;
 
 export const SHAPES: { [key: string]: Point[] } = {
   I: [

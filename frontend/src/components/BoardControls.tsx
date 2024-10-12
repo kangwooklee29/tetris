@@ -56,13 +56,13 @@ const useBoardControls = ({ dropTetromino, moveTetromino, rotateTetromino, curre
     const deltaX = touch.clientX - prevTouchPosX.current;
     const deltaY = touch.clientY - prevTouchPosY.current;
 
-    if (Math.abs(deltaX) > Math.abs(deltaY)) {
-      moveTetromino(deltaX > 0 ? 1 : -1);
-    } else {
-      dropTetromino();
-    }
-
     if (Math.abs(deltaX) >= 10 || Math.abs(deltaY) >= 10) {
+      if (Math.abs(deltaX) > Math.abs(deltaY)) {
+        moveTetromino(deltaX > 0 ? 1 : -1);
+      } else {
+        dropTetromino();
+      }
+
       prevTouchPosX.current = touch.clientX;
       prevTouchPosY.current = touch.clientY;
     }

@@ -159,13 +159,14 @@ const useBoardLogic = () => {
       for (let offseti of offsets) {
         for (let offsetj of offsets) {
           let newPosition: Point = [tetrominoPosition[0], tetrominoPosition[1]];
-        for (let i = 1; i < 4; i++) {
-          for (let j = 1; j < 4; j++) {
-            newPosition = [tetrominoPosition[0] + offseti[0] * i + offsetj[0] * j, tetrominoPosition[1] + offseti[1] * i + offsetj[1] * j];
-            if (isTetrominoValid(newShape, newPosition)) {
-              setTetrominoPosition(newPosition);
-              setCurrentTetromino({ ...currentTetromino, shape: newShape });
-              break;
+          for (let i = 1; i < 4; i++) {
+            for (let j = 1; j < 4; j++) {
+              newPosition = [tetrominoPosition[0] + offseti[0] * i + offsetj[0] * j, tetrominoPosition[1] + offseti[1] * i + offsetj[1] * j];
+              if (isTetrominoValid(newShape, newPosition)) {
+                setTetrominoPosition(newPosition);
+                setCurrentTetromino({ ...currentTetromino, shape: newShape });
+                break;
+              }
             }
           }
         }

@@ -10,3 +10,40 @@
 .board-cell.active {
     background-color: var(--tetromino-color);
 }
+
+.game-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.board-container {
+  flex: 1;
+}
+
+.next-tetrominos {
+  margin-left: 20px;
+}
+
+.preview-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tetromino-wrapper {
+  position: relative;
+  width: 100px; /* Adjust size as needed */
+  height: 100px;
+  background-color: #f3f3f3;
+  border: 1px solid #ddd;
+}
+
+.tetromino-preview {
+  position: relative;
+}
+
+.preview-cell {
+  position: absolute;
+  border: 1px solid #ddd;
+  background-color: var(--tetromino-color);
+}

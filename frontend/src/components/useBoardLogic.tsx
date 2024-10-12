@@ -14,7 +14,7 @@ const useBoardLogic = () => {
   const [gameOverMessage, setGameOverMessage] = useState<string>("");
   const [totalClearedLines, setTotalClearedLines] = useState<number>(0);
   const [currentDropInterval, setCurrentDropInterval] = useState<number>(InitialDropInterval);
-  const [nextTetrominos, SetNextTetrominos] = useState<Tetromino[]>([
+  const [nextTetrominos, setNextTetrominos] = useState<Tetromino[]>([
     randomTetromino(),
     randomTetromino(),
   ]);
@@ -89,7 +89,7 @@ const useBoardLogic = () => {
 
   const lockAndResetTetromino = () => {
     lockTetromino();
-    setCurrentTetromino(nextTetrominos[0);
+    setCurrentTetromino(nextTetrominos[0]);
     setTetrominoPosition([0, COLS / 2 - 1]);
 
     const newNextTetrominos = [
@@ -97,7 +97,7 @@ const useBoardLogic = () => {
       randomTetromino(),
     ];
 
-    setNextTetrominos(newNextTetrominos)
+    setNextTetrominos(newNextTetrominos);
 
     if (!isTetrominoValid(currentTetromino.shape, tetrominoPosition)) {
       processGameOver();
@@ -109,6 +109,7 @@ const useBoardLogic = () => {
       return;
     }
 
+    console.log(droppedToFloorRef.current);
     if (droppedToFloorRef.current)
     {
       lockAndResetTetromino();
@@ -137,7 +138,6 @@ const useBoardLogic = () => {
         newPos = [newPos[0] + 1, newPos[1]];
       }
       droppedToFloorRef.current = true;
-      console.log(droppedToFloorRef.current);
       setTetrominoPosition(newPos);
       return;
     }

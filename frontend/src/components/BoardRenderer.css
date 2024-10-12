@@ -42,8 +42,8 @@
 
 .tetromino-wrapper {
   position: relative;
-  width: 65px;
-  height: 65px;
+  width: 80px;
+  height: 80px;
   background-color: #f3f3f3;
   border: 1px solid #ddd;
   padding: 10px;

@@ -61,18 +61,20 @@ const BoardRenderer: React.FC<BoardRendererProps> = ({ gameBoard, currentTetromi
   
   return (
     <div className="game-container">
-      <div className="board-container">
-        {renderGameBoard()}
-      </div>
-    
-      <div className="next-tetrominos">
-        <h3>Next Blocks</h3>
-        <div className="preview-container">
-          {nextTetrominos.slice(0, 2).map((tetromino, index) => (
-            <div key={index} className="tetromino-wrapper">
-              {renderTetrominoPreview(tetromino)}
-            </div>
-          ))}
+      <div className="board-container-next-tetrominos">
+        <div className="board-container">
+          {renderGameBoard()}
+        </div>
+
+        <div className="next-tetrominos">
+          <h3>Next Blocks</h3>
+          <div className="preview-container">
+            {nextTetrominos.slice(0, 2).map((tetromino, index) => (
+              <div key={index} className="tetromino-wrapper">
+                {renderTetrominoPreview(tetromino)}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 

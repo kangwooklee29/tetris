@@ -21,6 +21,7 @@ const useBoardLogic = () => {
 
   const currentBoardFreezeRef = useRef<boolean>(false);
   const droppedToFloorRef = useRef<boolean>(false);
+  const newTetromioSettingRef = useRef<boolean>(false);
 
   const isPositionInBoard = (position: Point, offset: Point): boolean => {
     const newX = position[0] + offset[0];
@@ -90,7 +91,9 @@ const useBoardLogic = () => {
   const lockAndResetTetromino = () => {
     lockTetromino();
     setCurrentTetromino(nextTetrominos[0]);
+    newTetromioSettingRef.current = true;
     setTetrominoPosition([0, COLS / 2 - 1]);
+    newTetromioSettingRef.current = false;
 
     const newNextTetrominos = [
       ...nextTetrominos.slice(1),
@@ -100,32 +103,41 @@ const useBoardLogic = () => {
     setNextTetrominos(newNextTetrominos);
 
     if (!isTetrominoValid(currentTetromino.shape, tetrominoPosition)) {
+      console.log("new tetrominoPosition is invalid");
       processGameOver();
+    } else {
+      console.log("new tetrominoPosition is valid", gameBoard, tetrominoPosition);
     }
   };
 
   useEffect(() => {
-    if (currentBoardFreezeRef.current || isGameOver) {
+    if (currentBoardFreezeRef.current || isGameOver || newTetromioSettingRef.current) {
       return;
     }
 
-    console.log(droppedToFloorRef.current);
-    if (droppedToFloorRef.current)
-    {
+    if (droppedToFloorRef.current) {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
       lockAndResetTetromino();
       droppedToFloorRef.current = false;
       return;
     }
 
     if(!isTetrominoValid(currentTetromino.shape, [tetrominoPosition[0] + 1, tetrominoPosition[1]])) {
+      console.log("currentTetromino is touching the floor");
       if (debounceRef.current) {
         clearTimeout(debounceRef.current);
       }
       debounceRef.current = setTimeout(() => {
+        console.log("Locking currentTetromino");
         lockAndResetTetromino();
+        console.log("Locked currentTetromino");
       }, DebounceInterval);
+    } else {
+      console.log("currentTetromino is not touching the floor");
     }
-  }, [tetrominoPosition, currentTetromino, currentBoardFreezeRef, isGameOver]);
+  }, [tetrominoPosition]);
 
   const dropTetromino = (toFloor?: boolean) => {
     if (currentBoardFreezeRef.current || isGameOver) {
@@ -149,15 +161,22 @@ const useBoardLogic = () => {
   };
 
   const moveTetromino = (dir: number) => {
-    setTetrominoPosition(tetrominoPosition); // for debouncing
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
     const newPos: Point = [tetrominoPosition[0], tetrominoPosition[1] + dir];
     if (isTetrominoValid(currentTetromino.shape, newPos)) {
       setTetrominoPosition(newPos);
+    } else {
+      console.log("setting tetrominoPosition to check if valid");
+      setTetrominoPosition(tetrominoPosition);
     }
   };
 
   const rotateTetromino = () => {
-    setTetrominoPosition(tetrominoPosition); // for debouncing
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
     const newShape = currentTetromino.shape.map(([x, y]) => [-y, x] as Point);
     if (isTetrominoValid(newShape, tetrominoPosition)) {
       setCurrentTetromino({ ...currentTetromino, shape: newShape });
@@ -171,19 +190,21 @@ const useBoardLogic = () => {
       for (let offseti of offsets) {
         for (let offsetj of offsets) {
           let newPosition: Point = [tetrominoPosition[0], tetrominoPosition[1]];
-          for (let i = 1; i < 4; i++) {
-            for (let j = 1; j < 4; j++) {
+          for (let i = 1; i < 3; i++) {
+            for (let j = 1; j < 3; j++) {
               newPosition = [tetrominoPosition[0] + offseti[0] * i + offsetj[0] * j, tetrominoPosition[1] + offseti[1] * i + offsetj[1] * j];
               if (isTetrominoValid(newShape, newPosition)) {
                 setTetrominoPosition(newPosition);
                 setCurrentTetromino({ ...currentTetromino, shape: newShape });
-                break;
+                return;
               }
             }
           }
         }
       }
     }
+    console.log("setting tetrominoPosition to check if valid");
+    setTetrominoPosition(tetrominoPosition);
   };
 
   return { isPositionInBoard, gameBoard, currentTetromino, tetrominoPosition, setTetrominoPosition, setCurrentTetromino, setGameBoard, dropTetromino, moveTetromino, rotateTetromino, currentDropInterval, totalClearedLines, gameOverMessage, nextTetrominos };

@@ -14,6 +14,16 @@
 .game-container {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: #f9f9f9;
+  flex-direction: column;
+}
+
+.board-container-next-tetrominos {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
 }
 
 .board-container {
@@ -32,10 +42,11 @@
 
 .tetromino-wrapper {
   position: relative;
-  width: 100px; /* Adjust size as needed */
-  height: 100px;
+  width: 65px;
+  height: 65px;
   background-color: #f3f3f3;
   border: 1px solid #ddd;
+  padding: 10px;
 }
 
 .tetromino-preview {

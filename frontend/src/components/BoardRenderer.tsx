@@ -48,8 +48,8 @@ const BoardRenderer: React.FC<BoardRendererProps> = ({ gameBoard, currentTetromi
             className="preview-cell"
             style={{
               '--tetromino-color': tetromino.color,
-              top: `${y * BLOCK_SIZE / 2}px`, // Reduced size for the preview
-              left: `${x * BLOCK_SIZE / 2}px`, // Reduced size for the preview
+              top: `${x * BLOCK_SIZE / 2}px`, // Reduced size for the preview
+              left: `${y * BLOCK_SIZE / 2}px`, // Reduced size for the preview
               width: BLOCK_SIZE / 2,
               height: BLOCK_SIZE / 2,
             } as React.CSSProperties}

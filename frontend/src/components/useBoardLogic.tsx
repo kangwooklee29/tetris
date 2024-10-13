@@ -168,8 +168,19 @@ const useBoardLogic = () => {
     if (isTetrominoValid(currentTetromino.shape, newPos)) {
       setTetrominoPosition(newPos);
     } else {
-      console.log("setting tetrominoPosition to check if valid");
-      setTetrominoPosition(tetrominoPosition);
+      if(!isTetrominoValid(currentTetromino.shape, [tetrominoPosition[0] + 1, tetrominoPosition[1]])) {
+        console.log("currentTetromino is touching the floor");
+        if (debounceRef.current) {
+          clearTimeout(debounceRef.current);
+        }
+        debounceRef.current = setTimeout(() => {
+          console.log("Locking currentTetromino");
+          lockAndResetTetromino();
+          console.log("Locked currentTetromino");
+        }, DebounceInterval);
+      } else {
+        console.log("currentTetromino is not touching the floor");
+      }
     }
   };
 
@@ -203,8 +214,6 @@ const useBoardLogic = () => {
         }
       }
     }
-    console.log("setting tetrominoPosition to check if valid");
-    setTetrominoPosition(tetrominoPosition);
   };
 
   return { isPositionInBoard, gameBoard, currentTetromino, tetrominoPosition, setTetrominoPosition, setCurrentTetromino, setGameBoard, dropTetromino, moveTetromino, rotateTetromino, currentDropInterval, totalClearedLines, gameOverMessage, nextTetrominos };

@@ -161,26 +161,9 @@ const useBoardLogic = () => {
   };
 
   const moveTetromino = (dir: number) => {
-    if (debounceRef.current) {
-      clearTimeout(debounceRef.current);
-    }
     const newPos: Point = [tetrominoPosition[0], tetrominoPosition[1] + dir];
     if (isTetrominoValid(currentTetromino.shape, newPos)) {
       setTetrominoPosition(newPos);
-    } else {
-      if(!isTetrominoValid(currentTetromino.shape, [tetrominoPosition[0] + 1, tetrominoPosition[1]])) {
-        console.log("currentTetromino is touching the floor");
-        if (debounceRef.current) {
-          clearTimeout(debounceRef.current);
-        }
-        debounceRef.current = setTimeout(() => {
-          console.log("Locking currentTetromino");
-          lockAndResetTetromino();
-          console.log("Locked currentTetromino");
-        }, DebounceInterval);
-      } else {
-        console.log("currentTetromino is not touching the floor");
-      }
     }
   };
 

@@ -9,3 +9,11 @@ body, html, #root {
 * {
     box-sizing: border-box;
 }
+
+@media (max-width: 420px) {
+    body {
+        transform: scale(0.8);
+        width: 125%;
+        height: 125%;
+    }
+}
